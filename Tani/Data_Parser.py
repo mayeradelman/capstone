@@ -3,13 +3,32 @@
 #  into a usable 28x28 image.
 import os
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageOps
 import matplotlib.pyplot as plt
 
 # The code assumes it is run from within the same folder as hhd_dataset_cleaned
 train_directory = '.\hhd_dataset_cleaned\TRAIN'
 test_directory = '.\hhd_dataset_cleaned\TEST'
- 
+# largest_length = 0
+# largest_width = 0
+
+def process_image(image, y):
+    length = image.size[1]
+    length_diff = 350 - length
+    width = image.size[0]
+    width_diff = 350 - width
+    # global largest_length
+    # global largest_width
+    # if length > largest_length:
+    #     largest_length = length
+    # if width > largest_width:
+    #             largest_width = width
+    grayscale_image = image.convert('L')
+    inverted_image = ImageOps.invert(grayscale_image)
+    bordered_image = inverted_image.crop((0-width_diff/2., 0-length_diff/2., width+width_diff/2., length+length_diff/2.))
+    np_image = np.array(bordered_image.resize((28,28)))
+    return np_image
+
 # This function finds each image and adds it to the X list, and finds the correct
 # ID number from the image name and adds it to the y list
 def get_data(directory):
@@ -26,11 +45,6 @@ def get_data(directory):
                 y_data.append(i)
         # If this next item is a file, it is one of our images 
         elif os.path.isfile(f):
-            # Convert the image to a numpy array and resize the image and 
-            # convert it to grayscale (this removes the third dimension)
-            image = np.array(Image.open(f).convert('L').resize((28, 28)))
-            # Add the image to the X list
-            X_data.append(image)
             # Split the directory in order to get the file name
             strings = f.split("\\")
             file_ending = strings[len(strings)-1]
@@ -38,6 +52,12 @@ def get_data(directory):
             letter_number = file_ending.split('_')[0]
             # Add the ID number to the y list
             y_data.append(int(letter_number))
+
+            # Convert the image to a numpy array and resize the image and 
+            # convert it to grayscale (this removes the third dimension)
+            image = process_image(Image.open(f), int(letter_number))
+            # Add the image to the X list
+            X_data.append(image)
     return X_data, y_data
 
 X_train, y_train = get_data(train_directory)
@@ -53,10 +73,14 @@ print(len(y_test))
 X_test = np.array(X_test)
 y_test = np.array(y_test)
 
+# Largest length is 350 and largest width is 325
+# print(largest_length)
+# print(largest_width)
+
 fig, ax = plt.subplots(nrows=3, ncols=9, sharex=True, sharey=True)
 ax = ax.flatten()
 for i in range(27):
-  img = X_test[y_test == i][0].reshape(28, 28)
+  img = X_test[y_test == i][0]#.reshape(28, 28)
   ax[i].imshow(img, cmap='Greys')
 ax[0].set_xticks([])
 ax[0].set_yticks([])
