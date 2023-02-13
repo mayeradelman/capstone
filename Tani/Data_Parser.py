@@ -67,6 +67,11 @@ print(len(y_train))
 X_train = np.array(X_train)
 y_train = np.array(y_train)
 
+X_reshaped = np.array([i.flatten() for i in X_train])
+
+np.save('X_Data.npy', X_reshaped)
+np.save('Y_Data.npy', y_train)
+
 # Largest length is 350 and largest width is 325
 # print(largest_length)
 # print(largest_width)
