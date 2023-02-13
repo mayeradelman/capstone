@@ -6,9 +6,8 @@ import numpy as np
 from PIL import Image, ImageOps
 import matplotlib.pyplot as plt
 
-# The code assumes it is run from within the same folder as hhd_dataset_cleaned
-train_directory = '.\hhd_dataset_cleaned\TRAIN'
-test_directory = '.\hhd_dataset_cleaned\TEST'
+# The code assumes it is run from within the same folder as filled_in
+train_directory = '.\\filled_in\TRAIN'
 # largest_length = 0
 # largest_width = 0
 
@@ -65,13 +64,8 @@ X_train, y_train = get_data(train_directory)
 print(len(X_train))
 print(len(y_train))
 
-X_test, y_test = get_data(test_directory)
-
-print(len(X_test))
-print(len(y_test))
-
-X_test = np.array(X_test)
-y_test = np.array(y_test)
+X_train = np.array(X_train)
+y_train = np.array(y_train)
 
 # Largest length is 350 and largest width is 325
 # print(largest_length)
@@ -80,7 +74,7 @@ y_test = np.array(y_test)
 fig, ax = plt.subplots(nrows=3, ncols=9, sharex=True, sharey=True)
 ax = ax.flatten()
 for i in range(27):
-  img = X_test[y_test == i][0]#.reshape(28, 28)
+  img = X_train[y_train == i][0]#.reshape(28, 28)
   ax[i].imshow(img, cmap='Greys')
 ax[0].set_xticks([])
 ax[0].set_yticks([])
