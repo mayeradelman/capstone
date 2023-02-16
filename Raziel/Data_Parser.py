@@ -5,6 +5,7 @@ import os
 import numpy as np
 from PIL import Image, ImageOps
 import matplotlib.pyplot as plt
+import pickle
 
 # The code assumes it is run from within the same folder as filled_in
 train_directory = '.\\filled_in\TRAIN'
@@ -67,11 +68,14 @@ print(len(y_train))
 X_train = np.array(X_train)
 y_train = np.array(y_train)
 
-X_reshaped = np.array([i.flatten() for i in X_train])
+X_reshaped = X_train.reshape(X_train.shape[0], -1)
 
-np.save('X_Data.npy', X_reshaped)
-np.save('Y_Data.npy', y_train)
+np.savetxt('X_Data.npy', X_reshaped)
+np.savetxt('Y_Data.npy', y_train)
 
+#To fix shape when loading...
+#original = X_reshaped.reshape(
+    #original.shape[0], original.shape[1] // arr.shape[2], arr.shape[2])
 # Largest length is 350 and largest width is 325
 # print(largest_length)
 # print(largest_width)
